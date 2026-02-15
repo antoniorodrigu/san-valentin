@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 
 const app = document.querySelector("#app");
+const baseUrl = (import.meta.env.BASE_URL || "/").replace(/\/?$/, "/");
+const assetPath = (file) => `${baseUrl}${String(file).replace(/^\/+/, "")}`;
 
 app.innerHTML = `
   <canvas id="scene" aria-label="Detalle romantico 3D para Britney"></canvas>
@@ -45,7 +47,7 @@ app.innerHTML = `
         <span id="timelineProgress" class="timeline-progress" aria-hidden="true"></span>
         <div class="timeline-item" data-step="01">
           <figure class="timeline-media">
-            <img class="timeline-photo" data-photo="timeline-1" src="/timeline-1.jpg" alt="Antes de nosotros">
+            <img class="timeline-photo" data-photo="timeline-1" src="${assetPath("timeline-1.jpg")}" alt="Antes de nosotros">
           </figure>
           <div class="timeline-copy">
             <p class="timeline-kicker">Capitulo 1</p>
@@ -55,7 +57,7 @@ app.innerHTML = `
         </div>
         <div class="timeline-item" data-step="02">
           <figure class="timeline-media">
-            <img class="timeline-photo" data-photo="timeline-2" src="/timeline-2.jpg" alt="El dia inesperado">
+            <img class="timeline-photo" data-photo="timeline-2" src="${assetPath("timeline-2.jpg")}" alt="El dia inesperado">
           </figure>
           <div class="timeline-copy">
             <p class="timeline-kicker">Capitulo 2</p>
@@ -65,7 +67,7 @@ app.innerHTML = `
         </div>
         <div class="timeline-item" data-step="03">
           <figure class="timeline-media">
-            <img class="timeline-photo" data-photo="timeline-3" src="/timeline-3.jpg" alt="Las primeras palabras">
+            <img class="timeline-photo" data-photo="timeline-3" src="${assetPath("timeline-3.jpg")}" alt="Las primeras palabras">
           </figure>
           <div class="timeline-copy">
             <p class="timeline-kicker">Capitulo 3</p>
@@ -75,7 +77,7 @@ app.innerHTML = `
         </div>
         <div class="timeline-item" data-step="04">
           <figure class="timeline-media">
-            <img class="timeline-photo" data-photo="timeline-4" src="/timeline-4.jpg" alt="Cuando entendimos que era amor">
+            <img class="timeline-photo" data-photo="timeline-4" src="${assetPath("timeline-4.jpg")}" alt="Cuando entendimos que era amor">
           </figure>
           <div class="timeline-copy">
             <p class="timeline-kicker">Capitulo 4</p>
@@ -85,7 +87,7 @@ app.innerHTML = `
         </div>
         <div class="timeline-item" data-step="05">
           <figure class="timeline-media">
-            <img class="timeline-photo" data-photo="timeline-5" src="/timeline-5.jpg" alt="Las pruebas">
+            <img class="timeline-photo" data-photo="timeline-5" src="${assetPath("timeline-5.jpg")}" alt="Las pruebas">
           </figure>
           <div class="timeline-copy">
             <p class="timeline-kicker">Capitulo 5</p>
@@ -95,7 +97,7 @@ app.innerHTML = `
         </div>
         <div class="timeline-item" data-step="06">
           <figure class="timeline-media">
-            <img class="timeline-photo" data-photo="timeline-6" src="/timeline-6.jpg" alt="Hoy y siempre">
+            <img class="timeline-photo" data-photo="timeline-6" src="${assetPath("timeline-6.jpg")}" alt="Hoy y siempre">
           </figure>
           <div class="timeline-copy">
             <p class="timeline-kicker">Capitulo 6</p>
@@ -376,7 +378,7 @@ planetGroup.add(planet);
 const textureLoader = new THREE.TextureLoader();
 let photoTexture = null;
 textureLoader.load(
-  "/foto1.png",
+  assetPath("foto1.png"),
   (texture) => {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
@@ -702,8 +704,9 @@ let timelineDotButtons = [];
 const timelineAssetVersion = String(Date.now());
 
 function withAssetVersion(path) {
-  const separator = path.includes("?") ? "&" : "?";
-  return `${path}${separator}v=${timelineAssetVersion}`;
+  const resolvedPath = assetPath(path);
+  const separator = resolvedPath.includes("?") ? "&" : "?";
+  return `${resolvedPath}${separator}v=${timelineAssetVersion}`;
 }
 
 function setupTimelinePhotos() {
@@ -711,12 +714,12 @@ function setupTimelinePhotos() {
     const media = photo.closest(".timeline-media");
     const baseName = photo.dataset.photo || `timeline-${index + 1}`;
     const candidatePaths = [
-      `/${baseName}.jpg`,
-      `/${baseName}.jpeg`,
-      `/${baseName}.png`,
-      `/${baseName}.webp`,
-      `/${baseName}.avif`,
-      "/foto1.png",
+      `${baseName}.jpg`,
+      `${baseName}.jpeg`,
+      `${baseName}.png`,
+      `${baseName}.webp`,
+      `${baseName}.avif`,
+      "foto1.png",
     ];
     let candidateIndex = 0;
 
